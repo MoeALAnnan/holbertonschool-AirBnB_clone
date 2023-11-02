@@ -24,21 +24,24 @@ class BaseModel:
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        return '[{}] ({}) {}'.format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
         from models import storage
+        # Update the update timestamp
         self.updated_at = datetime.now()
+        # Call save method of storage
         storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
+        # Copy the instance attributes
+        dictionary = self.__dict__.copy()
+        # Add class name to the dictionary
+        dictionary['__class__'] = self.__class__.__name__
+        # Convert created_at to ISO format
         dictionary['created_at'] = self.created_at.isoformat()
+        # Convert updated_at to ISO format
         dictionary['updated_at'] = self.updated_at.isoformat()
         return dictionary
