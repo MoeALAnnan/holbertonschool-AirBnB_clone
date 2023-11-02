@@ -7,20 +7,33 @@ import datetime
 
 class BaseModel:
     """A base class for all hbnb models"""
-    def __init__(self):
-        """Instatntiates a new model"""
-        # Generate a unique id and convert to string
-        self.id = str(uuid.uuid4())
-        # Set creation timestamp
-        self.created_at = datetime.datetime.now()
-        # Set initial update timestamp to creation timestamp
-        self.updated_at = self.created_at
+    def __init__(self, *args, **kwargs):
+        """Instantiates a new model either from a dictionary representation
+        or from a new instance.
+        """
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key == 'created_at' or key == 'updated_at':
+                        value = datetime.datetime.strptime(
+                            value,
+                            '%Y-%m-%dT%H:%M:%S.%f'
+                            )
+                    setattr(self, key, value)
+        else:
+            # Generate a unique id and convert to string
+            self.id = str(uuid.uuid4())
+            # Set creation timestamp
+            self.created_at = datetime.datetime.now()
+            # Set initial update timestamp to creation timestamp
+            self.updated_at = self.created_at
 
     def __str__(self):
         """Returns a string representation of the instance"""
         string_representation = "[{}] ({}) {}"
-        return string_representation.format(self.__class__.__name__,
-                                            self.id, self.__dict__)
+        return string_representation.format(
+            self.__class__.__name__,
+            self.id, self.__dict__)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
