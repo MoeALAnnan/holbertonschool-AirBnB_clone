@@ -2,6 +2,7 @@
 """ Module with class FileStorage """
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -24,8 +25,11 @@ class FileStorage:
         """ serializes __objects to the JSON file """
         dict = {}
         for key, value in self.__objects.items():
-            dict[key] = value.to_dict()
-        with open(self.__file_path,"w", encoding="utf-8") as f:
+            if isinstance(value, User):
+                dict[key] = value.to_dict()
+            else:
+                dict[key] = value.to_dict()
+        with open(self.__file_path, "w", encoding="utf-8") as f:
             json.dump(dict, f)
 
     def reload(self):
@@ -33,6 +37,10 @@ class FileStorage:
         try:
             with open(self.__file_path, "r", encoding="utf-8") as f:
                 for key, value in json.load(f).items():
-                    self.__objects[key] = eval(value['__class__'])(**value)
+                    class_name = value['__class__']
+                    if class_name == 'User':
+                        self.__objects[key] = User(**value)
+                    else:
+                        self.__objects[key] = eval(class_name)(**value)
         except FileNotFoundError:
             pass
