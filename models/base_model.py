@@ -3,6 +3,7 @@
 
 import uuid
 import datetime
+from models import storage
 
 
 class BaseModel:
@@ -27,18 +28,15 @@ class BaseModel:
             self.created_at = datetime.datetime.now()
             # Set initial update timestamp to creation timestamp
             self.updated_at = self.created_at
-
-    def __str__(self):
-        """Returns a string representation of the instance"""
-        string_representation = "[{}] ({}) {}"
-        return string_representation.format(
-            self.__class__.__name__,
-            self.id, self.__dict__)
+            # Call new method on storage for new instances
+            storage.new(self)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
         # Update the update timestamp
         self.updated_at = datetime.datetime.now()
+        # Call save method of storage
+        storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
