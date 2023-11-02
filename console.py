@@ -1,5 +1,6 @@
-import cmd
+#!/usr/bin/python3
 """create console"""
+import cmd
 
 
 class HBNBCommand(cmd.Cmd):
