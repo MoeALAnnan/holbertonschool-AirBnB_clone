@@ -1,0 +1,16 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: #484848;
+    font-size: 14px;
+    font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Favicon */
+link[rel="icon"] {
+    /* Include your favicon path here */
+    /* Example: url('images/favicon.ico'); */
+}
+
+/* You may also specify styles for other global elements in this file */
+
